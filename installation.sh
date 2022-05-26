@@ -1,16 +1,21 @@
 #!/bin/sh
-Install Xcode command line tools
-xcode-select -p 1>/dev/null 2>/dev/null
-checkXcode=$?
-if [ $checkXcode != 0 ]; then
-  echo
-  echo "Please install Xcode command line tools first using"
-  echo "$(tput setaf 6)xcode-select --install$(tput sgr0)"
-  echo
-  exit 1
-fi
-# Install Xcode arm64
-xcode-select --install
+
+# Install MacPort tools
+curl -L -o macprots.pkg "https://github.com/nabad600/limavm/releases/download/v1.1.1/MacPorts-${sw_vers -productVersion | awk -F '.' '{print $1}'}.pkg"
+sudo installer -verbose -pkg macprots.pkg -target CurrentUserHomeDirectory
+
+# Install Xcode command line tools
+# xcode-select -p 1>/dev/null 2>/dev/null
+# checkXcode=$?
+# if [ $checkXcode != 0 ]; then
+#   echo
+#   echo "Please install Xcode command line tools first using"
+#   echo "$(tput setaf 6)xcode-select --install$(tput sgr0)"
+#   echo
+#   exit 1
+# fi
+# # Install MacPorts
+# xcode-select --install
 
 # # Install Homebrew arm64
 # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
