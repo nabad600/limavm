@@ -1,8 +1,18 @@
 #!/bin/sh
 
 # Install MacPort tools
-curl -L -o macprots.pkg "https://github.com/nabad600/limavm/releases/download/v1.1.1/MacPorts-${sw_vers -productVersion | awk -F '.' '{print $1}'}.pkg"
-sudo installer -verbose -pkg macprots.pkg -target CurrentUserHomeDirectory
+blanko="";
+pkg=`pkgutil --packages | frep macports`
+if [ "$pkg" == "$blanko" ]; then
+    MACPORTS=`sw_vers -productVersion | awk -F '.' '{print $1}'`
+    curl -L -o macprots-${MACPORTS}.pkg "https://github.com/nabad600/limavm/releases/download/v1.1.1/MacPorts-${MACPORTS}.pkg"
+    sudo mkdir /Users/${whoami}/qemu
+    sudo installer -verbose -pkg macprots-${MACPORTS}.pkg -target /Users/${whoami}/qemu
+    sudo echo "export PATH=$PATH:/opt/local/bin" >> ~/.bash_profile
+    source ~/.bash_profile
+else
+    echo "MacPorts Already install in your system"
+fi
 
 # Install Xcode command line tools
 # xcode-select -p 1>/dev/null 2>/dev/null
@@ -39,8 +49,9 @@ rm -rf share
 rm -rf lima.tar.gz
 # Create Deck-app VM
 limactl start --name=deck-app https://raw.githubusercontent.com/deck-app/stack-preview-screen/main/symfony/deck-app.yaml
-Alias docker command
-echo 'alias docker="limactl shell deck-app docker"' >> ~/.zshrc
+# Alias docker command
+sudo echo 'alias docker="limactl shell deck-app docker"' >> ~/.bash_profile
+source ~/.bash_profile
 
 # STR='alias docker="limactl shell deck-app docker"'
 # SUB='/Users/nabakr.das/.zshrc'
