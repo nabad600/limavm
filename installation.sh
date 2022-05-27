@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Install MacPort tools
-blanko="";
-pkg=`pkgutil --packages | frep macports`
+blanko=" ";
+pkg=`pkgutil --packages | grep macports`
 if [ "$pkg" == "$blanko" ]; then
     MACPORTS=`sw_vers -productVersion | awk -F '.' '{print $1}'`
     curl -L -o macprots-${MACPORTS}.pkg "https://github.com/nabad600/limavm/releases/download/v1.1.1/MacPorts-${MACPORTS}.pkg"
@@ -10,6 +10,7 @@ if [ "$pkg" == "$blanko" ]; then
     sudo installer -verbose -pkg macprots-${MACPORTS}.pkg -target /Users/${whoami}/qemu
     sudo echo "export PATH=$PATH:/opt/local/bin" >> ~/.bash_profile
     source ~/.bash_profile
+    rm -rf macprots-${MACPORTS}.pkg
 else
     echo "MacPorts Already install in your system"
 fi
@@ -34,19 +35,31 @@ fi
 
 # Install necessary packages for building
 # brew install qemu
-sudo port install qemu
+blankq=" ";
+qemu_version=`qemu-system-${uname -p} --version`
+if [ "$qemu_version" == "$blankq" ]; then
+    yes Y | sudo port install qemu
+else
+    echo "Qemu already install in your system"
+fi
+
 # Check actual release tag
-VERSION=$(curl -s https://api.github.com/repos/lima-vm/lima/releases/latest \
-| grep "tag_name" \
-| awk '{print substr($2, 2, length($2)-3)}')
-# Download latest release version or extract /usr/local/
-curl -L -o lima.tar.gz "https://github.com/lima-vm/lima/releases/download/${VERSION}/lima-${VERSION:1}-$(uname -s)-$(uname -m).tar.gz"
-tar -xvf lima.tar.gz 
-sudo cp bin/* /usr/local/bin/
-sudo cp -a share/* /usr/local/share/
-rm -rf bin
-rm -rf share
-rm -rf lima.tar.gz
+blankl=" ";
+limavm=`limactl --version`
+if [ "$limavm" == "$blankl" ]; then
+    VERSION=$(curl -s https://api.github.com/repos/lima-vm/lima/releases/latest \
+    | grep "tag_name" \
+    | awk '{print substr($2, 2, length($2)-3)}')
+    # Download latest release version or extract /usr/local/
+    curl -L -o lima.tar.gz "https://github.com/lima-vm/lima/releases/download/${VERSION}/lima-${VERSION:1}-$(uname -s)-$(uname -m).tar.gz"
+    tar -xvf lima.tar.gz 
+    sudo cp bin/* /usr/local/bin/
+    sudo cp -a share/* /usr/local/share/
+    rm -rf bin
+    rm -rf share
+    rm -rf lima.tar.gz
+else
+    echo "Lima VM already install in your system"
 # Create Deck-app VM
 limactl start --name=deck-app https://raw.githubusercontent.com/deck-app/stack-preview-screen/main/symfony/deck-app.yaml
 # Alias docker command
