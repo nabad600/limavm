@@ -8,7 +8,7 @@ if [ "$pkg" == "$blanko" ]; then
     curl -L -o macprots-${MACPORTS}.pkg "https://github.com/nabad600/limavm/releases/download/v1.1.1/MacPorts-${MACPORTS}.pkg"
     sudo mkdir /Users/${whoami}/qemu
     sudo installer -verbose -pkg macprots-${MACPORTS}.pkg -target /Users/${whoami}/qemu
-    sudo echo "export PATH=$PATH:/opt/local/bin" >> ~/.bash_profile
+    echo "export PATH=$PATH:/opt/local/bin" >> ~/.bash_profile
     source ~/.bash_profile
     rm -rf macprots-${MACPORTS}.pkg
 else
@@ -36,7 +36,7 @@ fi
 # Install necessary packages for building
 # brew install qemu
 blankq=" ";
-qemu_version=`qemu-system-${uname -p} --version`
+qemu_version='`qemu-system-${uname -p} --version`'
 if [ "$qemu_version" == "$blankq" ]; then
     yes Y | sudo port install qemu
 else
@@ -45,7 +45,7 @@ fi
 
 # Check actual release tag
 blankl=" ";
-limavm=`limactl --version`
+limavm='`limactl --version`'
 if [ "$limavm" == "$blankl" ]; then
     VERSION=$(curl -s https://api.github.com/repos/lima-vm/lima/releases/latest \
     | grep "tag_name" \
@@ -59,11 +59,12 @@ if [ "$limavm" == "$blankl" ]; then
     rm -rf share
     rm -rf lima.tar.gz
 else
-    echo "Lima VM already install in your system"
+    echo "Lima ctl already install in your system"
+fi
 # Create Deck-app VM
-limactl start --name=deck-app https://raw.githubusercontent.com/deck-app/stack-preview-screen/main/symfony/deck-app.yaml
+limactl start --name=deck https://raw.githubusercontent.com/lima-vm/lima/master/examples/docker.yaml |
 # Alias docker command
-sudo echo 'alias docker="limactl shell deck-app docker"' >> ~/.bash_profile
+echo 'alias docker="limactl shell deck-app docker"' >> ~/.bash_profile
 source ~/.bash_profile
 
 # STR='alias docker="limactl shell deck-app docker"'
