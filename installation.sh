@@ -62,7 +62,7 @@ else
     echo "Lima ctl already install in your system"
 fi
 # Create Deck-app VM
-limactl start --name=deck https://raw.githubusercontent.com/lima-vm/lima/master/examples/docker.yaml |
+limactl start --name=deck-app https://raw.githubusercontent.com/deck-app/stack-preview-screen/main/symfony/deck-app.yaml |
 # Alias docker command
 echo 'alias docker="limactl shell deck-app docker"' >> ~/.bash_profile
 source ~/.bash_profile
